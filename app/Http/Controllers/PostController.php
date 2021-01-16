@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -13,7 +14,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $post = Post::all();
+        return view('posts',['posts' => $posts]);
     }
 
     /**
@@ -34,7 +36,18 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required'
+        ]);
+
+        $post = Post::updateOrCreate(
+            ['id' => $request->id],
+            ['title' => $request->title,
+            'description' => $request->description]
+        );
+
+        return response()->json(['code'=>200, 'message'=>'Post Created Succesfully', 'data'=>$post],200);
     }
 
     /**
@@ -45,7 +58,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        return response()->json($post);
     }
 
     /**
@@ -79,6 +93,7 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::find($id)->delete();
+        return response()->json(['success'=>'Post Deleted successfully']);
     }
 }
