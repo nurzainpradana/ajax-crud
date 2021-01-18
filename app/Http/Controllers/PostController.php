@@ -14,18 +14,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $post = Post::all();
-        return view('posts',['posts' => $posts]);
-    }
+        $posts = Post::all();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('posts', ['posts' => $posts]);
     }
 
     /**
@@ -37,17 +28,17 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required'
+          'title'       => 'required|max:255',
+          'description' => 'required',
         ]);
 
-        $post = Post::updateOrCreate(
-            ['id' => $request->id],
-            ['title' => $request->title,
-            'description' => $request->description]
-        );
+        $post = Post::updateOrCreate(['id' => $request->id], [
+                  'title' => $request->title,
+                  'description' => $request->description
+                ]);
 
-        return response()->json(['code'=>200, 'message'=>'Post Created Succesfully', 'data'=>$post],200);
+        return response()->json(['code'=>200, 'message'=>'Post Created successfully','data' => $post], 200);
+
     }
 
     /**
@@ -59,30 +50,8 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
+
         return response()->json($post);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -93,7 +62,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::find($id)->delete();
-        return response()->json(['success'=>'Post Deleted successfully']);
+      $post = Post::find($id)->delete();
+
+      return response()->json(['success'=>'Post Deleted successfully']);
     }
 }
